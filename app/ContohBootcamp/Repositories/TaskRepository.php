@@ -1,4 +1,5 @@
 <?php
+
 namespace App\ContohBootcamp\Repositories;
 
 use App\Helpers\MongoModel;
@@ -25,7 +26,7 @@ class TaskRepository
 	 *  */
 	public function getById(string $id)
 	{
-		$task = $this->tasks->find(['_id'=>$id]);
+		$task = $this->tasks->find(['_id' => $id]);
 		return $task;
 	}
 
@@ -35,11 +36,11 @@ class TaskRepository
 	public function create(array $data)
 	{
 		$dataSaved = [
-			'title'=>$data['title'],
-			'description'=>$data['description'],
-			'assigned'=>null,
-			'subtasks'=> [],
-			'created_at'=>time()
+			'title' => $data['title'],
+			'description' => $data['description'],
+			'assigned' => null,
+			'subtasks' => [],
+			'created_at' => time()
 		];
 
 		$id = $this->tasks->save($dataSaved);
@@ -53,5 +54,22 @@ class TaskRepository
 	{
 		$id = $this->tasks->save($editedData);
 		return $id;
+	}
+
+	/**
+	 * untuk menghapus task berdasarkan id
+	 */
+	public function delete(string $id)
+	{
+		$this->tasks->deleteQuery(['_id' => $id]);
+	}
+
+	/**
+	 * generate object id 
+	 * */
+
+	public function generateOid()
+	{
+		return $this->tasks->generateOid();
 	}
 }

@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use App\Helpers\MongoModel;
+use MongoDB\BSON\ObjectID;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,6 +15,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
+        $tasks = new MongoModel('tasks');
+
+        for ($i = 0; $i < 10; $i++) {
+            $tasks->collection->insertOne([
+                '_id' => (string) new ObjectID(),
+                'title' => "Task ke $i",
+                'description' => "deskirpsi task ke $i",
+                'assigned' => null,
+                'subtasks' => [],
+                'created_at' => time()
+            ]);
+        }
     }
 }

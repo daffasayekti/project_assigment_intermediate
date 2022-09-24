@@ -30,7 +30,7 @@ class MongoModel
         $config['mongo_host_db_flag'] = FALSE;
 
         $uriopt = ($config['mongo_username']) ? array("username" => $config['mongo_username'], "password" => $config['mongo_password']) : [];
-        $conn = new Client("mongodb://".$config['mongo_hostbase'],$uriopt,['typeMap' => ['root' => 'array', 'document' => 'array', 'array' => 'array']]);
+        $conn = new Client("mongodb://" . $config['mongo_hostbase'], $uriopt, ['typeMap' => ['root' => 'array', 'document' => 'array', 'array' => 'array']]);
 
         $this->db = $conn->{$config['mongo_database']};
 
@@ -42,22 +42,21 @@ class MongoModel
     private function parseCursor($docs)
     {
         $documents = [];
-        foreach($docs as $doc)
-        {
+        foreach ($docs as $doc) {
             $documents[] = $doc;
         }
 
         return $documents;
     }
 
-    public function get($filter) : array
+    public function get($filter): array
     {
         $documents = $this->collection->find($filter);
         $documents = $this->parseCursor($documents);
         return $documents;
     }
 
-    public function find($filter) : ?array
+    public function find($filter): ?array
     {
         $documents = $this->collection->findOne($filter);
         return $documents;
@@ -65,13 +64,18 @@ class MongoModel
 
     public function save(array $data): string
     {
-        $id = isset($data['_id']) ? $data['_id']: (string) new \MongoDB\BSON\ObjectId();
-        $this->collection->updateOne(['_id' => $id], ['$set' => $data], ['upsert'=>true]);
+        $id = $data['_id'] ?? $this->generateOid();
+        $this->collection->updateOne(['_id' => $id], ['$set' => $data], ['upsert' => true]);
         return (string) $id;
     }
 
     public function deleteQuery(array $filter): void
     {
         $this->collection->deleteOne($filter);
+    }
+
+    public function generateOid()
+    {
+        return (string) new \MongoDB\BSON\ObjectId();
     }
 }
